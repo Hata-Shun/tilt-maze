@@ -28,6 +28,12 @@ body{
 }
 
 #message{
+    color: goldenrod;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+#failmessage{
     color: red;
     font-size: 24px;
     font-weight: bold;

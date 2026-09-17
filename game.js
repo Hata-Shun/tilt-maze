@@ -1,8 +1,10 @@
 let ball = { x: 150, y: 200, vx: 0, vy: 0 };
 let playtime = 0.0;
+let wallhit = 0;
 let startTime = Date.now()/1000;
-let start = false;
-let cleared = false;
+let start = false;  //スタートボタン判定
+let cleared = false;    //クリア判定
+let failed = false; //失敗判定
 
 let walls = [
   { x: -20, y: 120, w: 230, h: 16 },
@@ -11,20 +13,26 @@ let walls = [
 
 document.getElementById("startBtn").addEventListener("click", function () {
     ball = { x: 150, y: 200, vx: 0, vy: 0 };
+    playtime = 0.0;
+    wallhit = 0;
     startTime = Date.now() / 1000;
     start = true;
-});
+    cleared = false;
+    failed = false;
+    document.getElementById("message").textContent = "";
+});//startボタン
 
 function hitWall() {
   for (let i = 0; i < walls.length; i++) {
     let w = walls[i];
     if (ball.x > w.x && ball.x < w.x + w.w &&
         ball.y > w.y && ball.y < w.y + w.h) {
-      return true;
+        wallhit ++; 
+        return true;
     }
   }
   return false;
-}
+}//当たり判定
 
 function update() 
 {
@@ -45,34 +53,37 @@ function update()
     if(ball.x<10){
         ball.x = 10;
         ball.vx *= -0.5;
+        wallhit ++;
     }//箱枠制御x0
     if(ball.x>BOARD_W-10){
         ball.x = BOARD_W-10;
         ball.vx *= -0.5;
+        wallhit ++;
     }//箱枠制御xW
     if(ball.y<10){
         ball.y = 10;
         ball.vy *= -0.5;
+        wallhit ++;
     }//箱枠制御y0
     if(ball.y>BOARD_H-10){
         ball.y = BOARD_H-10;
         ball.vy *= -0.5;
+        wallhit ++;
     }//箱枠制御yW
 
     let prevX = ball.x;
-    ball.x = ball.x + ball.vx;
     if (hitWall()) {
     ball.x = prevX;
     ball.vx *= -0.5;
     }//壁制御x
     let prevY = ball.y;
-    ball.y = ball.y + ball.vy;
     if (hitWall()) {
     ball.y = prevY;
     ball.vy *=-0.5;
     }//壁制御y
 
-    if(cleared != true) playtime = Date.now()/1000 - startTime;
+    if(cleared != true && failed != true) 
+        playtime = Date.now()/1000 - startTime + wallhit*5;
     if(start) document.getElementById("timer").textContent = playtime.toFixed(1);
 
     let dx = ball.x - goal.x;
@@ -82,6 +93,11 @@ function update()
     if (dist < goal.r) {
         cleared = true;
         document.getElementById("message").textContent = "CLEAR";
+    }
+
+    if(playtime > 30){
+        failed = true;
+        document.getElementById("failmessage").textContent = "Failed"
     }
 
 
