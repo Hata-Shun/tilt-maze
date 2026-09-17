@@ -1,6 +1,6 @@
 let ball = { x: 45, y: 60, vx: 0, vy: 0 };
 let playtime = 0.0;
-let wallhit = 0;
+let wallhit = 0;    //壁回数判定
 let startTime = Date.now()/1000;
 let start = false;  //スタートボタン判定
 let cleared = false;    //クリア判定
