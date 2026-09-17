@@ -9,6 +9,8 @@ let failed = false; //失敗判定
 let walls = [
   { x: -20, y: 120, w: 230, h: 16 },
   { x: 90,  y: 250, w: 230, h: 16 },
+  { x: 210, y: 120, w: 16, h: 50},
+  { x: 90, y: 216, w: 16, h: 50},
 ];
 
 document.getElementById("startBtn").addEventListener("click", function () {
