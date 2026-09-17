@@ -1,32 +1,55 @@
 let ball = { x: 150, y: 200, vx: 0, vy: 0 };
+let playtime = 0.0;
+let startTime = Date.now()/1000;
+let cleared = false;
 
 function update() 
 {
+    let goal = { x: 45, y: 330, r: 22 };
+    drawGoal( goal.x, goal.y, goal.r);
+
+
     ball.vx = ball.vx * 0.98 + tilt.x * 0.5;
     ball.vy = ball.vy * 0.98 + tilt.y * 0.5;
 
     ball.x = ball.x + ball.vx;
     ball.y = ball.y + ball.vy;
 
-    if(ball.x<0){
-        ball.x = 0;
+    if(ball.x<10){
+        ball.x = 10;
         ball.vx *= -0.5;
     }//箱枠制御x0
-    if(ball.x>BOARD_W){
-        ball.x = BOARD_W;
+    if(ball.x>BOARD_W-10){
+        ball.x = BOARD_W-10;
         ball.vx *= -0.5;
     }//箱枠制御xW
-    if(ball.y<0){
-        ball.y = 0;
+    if(ball.y<10){
+        ball.y = 10;
         ball.vy *= -0.5;
     }//箱枠制御y0
-    if(ball.y>BOARD_H){
-        ball.y = BOARD_H;
+    if(ball.y>BOARD_H-10){
+        ball.y = BOARD_H-10;
         ball.vy *= -0.5;
     }//箱枠制御yW
 
+    if(cleared != true){
+        playtime = Date.now()/1000 - startTime;
+    }
+    document.getElementById("timer").textContent = playtime.toFixed(1);
+
+    let dx = ball.x - goal.x;
+    let dy = ball.y - goal.y;
+    let dist = Math.sqrt(dx * dx + dy * dy);
+
+    if (dist < goal.r) {
+        cleared = true;
+        document.getElementById("message").textContent = "CLEAR";
+    }
+
+
     drawBall(ball.x, ball.y);
 }
+
 
 
 
@@ -244,7 +267,8 @@ function update()
 //  発展
 //
 //    ・玉には半径10がある。壁にめり込んで見えるのを直す
-//    ・空気抵抗を速度の2乗に比例させる（今は1次）
+//
+//    ・空気抵抗を速度の2乗に比例させる（今は1次）-静止摩擦
 //    ・センサー値のノイズが気になる場合、
 //      tilt に移動平均やローパスフィルタをかけて滑らかにする
 //    ・玉を複数にして、玉どうしの衝突を扱う
