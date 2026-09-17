@@ -69,7 +69,7 @@ function update()
     }//箱枠制御yW
 
     let prevX = ball.x;
-    ball.x += ball.vx;
+    ball.x += ball.vx;  //x=x+vt
     if (hitWall()) {
     ball.x = prevX;
     ball.vx *= -0.5;
@@ -96,7 +96,11 @@ function update()
         document.getElementById("message").textContent = "CLEAR";
     }
 
-    if(playtime > 30){
+    if(cleared){
+        ball = { x:goal.x, y: goal.y, vx: 0, vy: 0 };
+    }
+
+    if(playtime > 30 && start == true){
         failed = true;
         document.getElementById("failmessage").textContent = "Failed";
     }
