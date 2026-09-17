@@ -1,3 +1,35 @@
+let ball = { x: 150, y: 200, vx: 0, vy: 0 };
+
+function update() 
+{
+    ball.vx = ball.vx * 0.98 + tilt.x * 0.5;
+    ball.vy = ball.vy * 0.98 + tilt.y * 0.5;
+
+    ball.x = ball.x + ball.vx;
+    ball.y = ball.y + ball.vy;
+
+    if(ball.x<0){
+        ball.x = 0;
+        ball.vx *= -0.5;
+    }//箱枠制御x0
+    if(ball.x>BOARD_W){
+        ball.x = BOARD_W;
+        ball.vx *= -0.5;
+    }//箱枠制御xW
+    if(ball.y<0){
+        ball.y = 0;
+        ball.vy *= -0.5;
+    }//箱枠制御y0
+    if(ball.y>BOARD_H){
+        ball.y = BOARD_H;
+        ball.vy *= -0.5;
+    }//箱枠制御yW
+
+    drawBall(ball.x, ball.y);
+}
+
+
+
 // ============================================================
 //  勉強会(2)  傾きで玉を動かす
 // ============================================================
