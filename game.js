@@ -26,9 +26,8 @@ document.getElementById("startBtn").addEventListener("click", function () {
 function hitWall() {
   for (let i = 0; i < walls.length; i++) {
     let w = walls[i];
-    if (ball.x > w.x && ball.x < w.x + w.w &&
-        ball.y > w.y && ball.y < w.y + w.h) {
-        wallhit ++; 
+    if (ball.x+10 > w.x && ball.x-10 < w.x + w.w &&
+        ball.y+10 > w.y && ball.y-10 < w.y + w.h) {
         return true;
     }
   }
@@ -47,9 +46,6 @@ function update()
 
     ball.vx = ball.vx * 0.98 + tilt.x * 0.3;
     ball.vy = ball.vy * 0.98 + tilt.y * 0.3;
-
-    ball.x = ball.x + ball.vx;
-    ball.y = ball.y + ball.vy;
 
     if(ball.x<10){
         ball.x = 10;
@@ -73,14 +69,18 @@ function update()
     }//箱枠制御yW
 
     let prevX = ball.x;
+    ball.x += ball.vx;
     if (hitWall()) {
     ball.x = prevX;
     ball.vx *= -0.5;
+    wallhit ++;
     }//壁制御x
     let prevY = ball.y;
+    ball.y += ball.vy;
     if (hitWall()) {
     ball.y = prevY;
     ball.vy *=-0.5;
+    wallhit ++;
     }//壁制御y
 
     if(cleared != true && failed != true) 
@@ -91,7 +91,7 @@ function update()
     let dy = ball.y - goal.y;
     let dist = Math.sqrt(dx * dx + dy * dy);
 
-    if (dist < goal.r) {
+    if (dist < goal.r && failed != true) {
         cleared = true;
         document.getElementById("message").textContent = "CLEAR";
     }
