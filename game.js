@@ -7,6 +7,7 @@ let start = false;  //スタートボタン判定
 let cleared = false;    //クリア判定
 let failed = false; //失敗判定
 
+let stageTimes = [];
 let walls = [];
 let goal = {};
 
@@ -59,6 +60,11 @@ function hitWall()
 }//当たり判定
 
 document.getElementById("startBtn").addEventListener("click", function () {
+    if(cleared || failed){
+        stageIndex = 0;
+        stageTimes = [];
+        document.getElementById("stageTimes").innerHTML = "";
+    }
     loadStage(stageIndex);
 
     playtime = 0.0;
@@ -133,6 +139,8 @@ function update()
     let dist = Math.sqrt(dx * dx + dy * dy);
 
     if (dist < goal.r && failed != true&&start) {
+        stageTimes[stageIndex] = playtime;
+
         if(stageIndex < stages.length-1){
             stageIndex++;
             loadStage(stageIndex);
@@ -147,6 +155,15 @@ function update()
             cleared = true;
             start = false;
             document.getElementById("message").textContent = "CLEAR";
+
+            let result = "";
+
+            for (let i = 0; i < stageTimes.length; i++) {
+                result += "STAGE " + (i + 1) + ": "
+                    + stageTimes[i].toFixed(1) + "秒<br>";
+            }
+
+            document.getElementById("stageTimes").innerHTML = result;
         }
     }
 
@@ -157,6 +174,15 @@ function update()
     if(playtime > 30 && start == true){
         failed = true;
         document.getElementById("failmessage").textContent = "Failed";
+
+        let result = "";
+
+            for (let i = 0; i < stageTimes.length; i++) {
+                result += "STAGE " + (i + 1) + ": "
+                    + stageTimes[i].toFixed(1) + "秒<br>";
+            }
+
+            document.getElementById("stageTimes").innerHTML = result;
     }
 
 
