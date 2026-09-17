@@ -1,4 +1,4 @@
-let ball = { x: 150, y: 200, vx: 0, vy: 0 };
+let ball = { x: 45, y: 60, vx: 0, vy: 0 };
 let playtime = 0.0;
 let wallhit = 0;
 let startTime = Date.now()/1000;
@@ -12,7 +12,7 @@ let walls = [
 ];
 
 document.getElementById("startBtn").addEventListener("click", function () {
-    ball = { x: 150, y: 200, vx: 0, vy: 0 };
+    ball = { x: 45, y: 60, vx: 0, vy: 0 };
     playtime = 0.0;
     wallhit = 0;
     startTime = Date.now() / 1000;
@@ -36,7 +36,7 @@ function hitWall() {
 
 function update() 
 {
-    let goal = { x: 45, y: 330, r: 22 };
+    let goal = { x: 255, y: 330, r: 22 };
     drawGoal( goal.x, goal.y, goal.r);
 
     for (let i = 0; i < walls.length; i++) {
@@ -91,12 +91,12 @@ function update()
     let dy = ball.y - goal.y;
     let dist = Math.sqrt(dx * dx + dy * dy);
 
-    if (dist < goal.r && failed != true) {
+    if (dist < goal.r && failed != true&&start) {
         cleared = true;
         document.getElementById("message").textContent = "CLEAR";
     }
 
-    if(cleared){
+    if(cleared&&start){
         ball = { x:goal.x, y: goal.y, vx: 0, vy: 0 };
     }
 
