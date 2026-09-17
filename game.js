@@ -4,19 +4,40 @@ let startTime = Date.now()/1000;
 let start = false;
 let cleared = false;
 
+let walls = [
+  { x: -20, y: 120, w: 230, h: 16 },
+  { x: 90,  y: 250, w: 230, h: 16 },
+];
+
 document.getElementById("startBtn").addEventListener("click", function () {
+    ball = { x: 150, y: 200, vx: 0, vy: 0 };
     startTime = Date.now() / 1000;
     start = true;
 });
+
+function hitWall() {
+  for (let i = 0; i < walls.length; i++) {
+    let w = walls[i];
+    if (ball.x > w.x && ball.x < w.x + w.w &&
+        ball.y > w.y && ball.y < w.y + w.h) {
+      return true;
+    }
+  }
+  return false;
+}
 
 function update() 
 {
     let goal = { x: 45, y: 330, r: 22 };
     drawGoal( goal.x, goal.y, goal.r);
 
+    for (let i = 0; i < walls.length; i++) {
+        drawWall(walls[i].x, walls[i].y, walls[i].w, walls[i].h);
+    }
 
-    ball.vx = ball.vx * 0.98 + tilt.x * 0.5;
-    ball.vy = ball.vy * 0.98 + tilt.y * 0.5;
+
+    ball.vx = ball.vx * 0.98 + tilt.x * 0.3;
+    ball.vy = ball.vy * 0.98 + tilt.y * 0.3;
 
     ball.x = ball.x + ball.vx;
     ball.y = ball.y + ball.vy;
@@ -38,9 +59,20 @@ function update()
         ball.vy *= -0.5;
     }//箱枠制御yW
 
-    if(cleared != true){
-        playtime = Date.now()/1000 - startTime;
-    }
+    let prevX = ball.x;
+    ball.x = ball.x + ball.vx;
+    if (hitWall()) {
+    ball.x = prevX;
+    ball.vx *= -0.5;
+    }//壁制御x
+    let prevY = ball.y;
+    ball.y = ball.y + ball.vy;
+    if (hitWall()) {
+    ball.y = prevY;
+    ball.vy *=-0.5;
+    }//壁制御y
+
+    if(cleared != true) playtime = Date.now()/1000 - startTime;
     if(start) document.getElementById("timer").textContent = playtime.toFixed(1);
 
     let dx = ball.x - goal.x;
