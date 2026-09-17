@@ -1,4 +1,5 @@
-let ball = { x: 45, y: 60, vx: 0, vy: 0 };
+let ball = { x: 45, y: 60, vx: 0, vy: 0 }
+let stageIndex = 0;
 let playtime = 0.0;
 let wallhit = 0;    //壁回数判定
 let startTime = Date.now()/1000;
@@ -6,26 +7,47 @@ let start = false;  //スタートボタン判定
 let cleared = false;    //クリア判定
 let failed = false; //失敗判定
 
-let walls = [
-  { x: -20, y: 120, w: 230, h: 16 },
-  { x: 90,  y: 250, w: 230, h: 16 },
-  { x: 210, y: 120, w: 16, h: 50},
-  { x: 90, y: 216, w: 16, h: 50},
-];
+let walls = [];
+let goal = {};
 
-document.getElementById("startBtn").addEventListener("click", function () {
-    ball = { x: 45, y: 60, vx: 0, vy: 0 };
-    playtime = 0.0;
-    wallhit = 0;
-    startTime = Date.now() / 1000;
-    start = true;
-    cleared = false;
-    failed = false;
-    document.getElementById("message").textContent = "";
-    document.getElementById("failmessage").textContent = "";
-});//startボタン
+const stages = [
+    {
+        start: {x: 45, y:60},
+        goal: {x: 255, y: 330, r: 22},
+        walls:[
+            { x: -20, y: 120, w: 230, h: 16 },
+            { x: 90,  y: 250, w: 230, h: 16 },
+            { x: 210, y: 120, w: 16, h: 50},
+            { x: 90, y: 216, w: 16, h: 50},
+        ]
+    },
+    {
+        start: {x: 255, y:330},
+        goal: {x: 45, y: 60, r: 22},
+        walls:[
+            { x: -20, y: 120, w: 230, h: 16 },
+            { x: 90,  y: 250, w: 230, h: 16 },
+            { x: 210, y: 120, w: 16, h: 50},
+            { x: 90, y: 216, w: 16, h: 50},
+        ]
+    },
+]
 
-function hitWall() {
+function loadStage(index)
+{
+    const stage =stages[index];
+    walls = stage.walls;
+    goal = stage.goal;
+    ball = {
+        x:stage.start.x,
+        y:stage.start.y,
+        vx: 0,
+        vy: 0
+    };
+}
+
+function hitWall() 
+{
   for (let i = 0; i < walls.length; i++) {
     let w = walls[i];
     if (ball.x+10 > w.x && ball.x-10 < w.x + w.w &&
@@ -36,9 +58,26 @@ function hitWall() {
   return false;
 }//当たり判定
 
+document.getElementById("startBtn").addEventListener("click", function () {
+    loadStage(stageIndex);
+
+    playtime = 0.0;
+    wallhit = 0;
+    startTime = Date.now() / 1000;
+    start = true;
+    cleared = false;
+    failed = false;
+    document.getElementById("message").textContent = "";
+    document.getElementById("failmessage").textContent = "";
+});//startボタン
+
 function update() 
 {
-    let goal = { x: 255, y: 330, r: 22 };
+    if (!start) {
+        drawBall(ball.x, ball.y);
+        return;
+    }
+
     drawGoal( goal.x, goal.y, goal.r);
 
     for (let i = 0; i < walls.length; i++) {
@@ -94,8 +133,21 @@ function update()
     let dist = Math.sqrt(dx * dx + dy * dy);
 
     if (dist < goal.r && failed != true&&start) {
-        cleared = true;
-        document.getElementById("message").textContent = "CLEAR";
+        if(stageIndex < stages.length-1){
+            stageIndex++;
+            loadStage(stageIndex);
+            playtime = 0.0;
+            wallhit = 0
+            start = false;
+            cleared = false;
+
+            document.getElementById("message").textContent = 
+            "STAGE " + (stageIndex + 1);
+        }else{
+            cleared = true;
+            start = false;
+            document.getElementById("message").textContent = "CLEAR";
+        }
     }
 
     if(cleared&&start){
