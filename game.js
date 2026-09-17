@@ -1,7 +1,13 @@
 let ball = { x: 150, y: 200, vx: 0, vy: 0 };
 let playtime = 0.0;
 let startTime = Date.now()/1000;
+let start = false;
 let cleared = false;
+
+document.getElementById("startBtn").addEventListener("click", function () {
+    startTime = Date.now() / 1000;
+    start = true;
+});
 
 function update() 
 {
@@ -35,7 +41,7 @@ function update()
     if(cleared != true){
         playtime = Date.now()/1000 - startTime;
     }
-    document.getElementById("timer").textContent = playtime.toFixed(1);
+    if(start) document.getElementById("timer").textContent = playtime.toFixed(1);
 
     let dx = ball.x - goal.x;
     let dy = ball.y - goal.y;
