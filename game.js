@@ -20,6 +20,7 @@ document.getElementById("startBtn").addEventListener("click", function () {
     cleared = false;
     failed = false;
     document.getElementById("message").textContent = "";
+    document.getElementById("failmessage").textContent = "";
 });//startボタン
 
 function hitWall() {
@@ -97,7 +98,7 @@ function update()
 
     if(playtime > 30){
         failed = true;
-        document.getElementById("failmessage").textContent = "Failed"
+        document.getElementById("failmessage").textContent = "Failed";
     }
 
 
